@@ -21,7 +21,8 @@ exports.postAddProduct = (req, res, next) => {
      description: description,
       price: price,
       imageUrl: imageUrl, 
-      description: description
+      description: description,
+      userId:req.user._id
     })
     product.save()//this save method comes from mongoose
   .then(result => {
@@ -36,7 +37,10 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
  Product.find()
+ //.select('title price')
+ //.populate('userId' , 'name')//isse user information mil jaegi
     .then(products => {
+      console.log(products)
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',

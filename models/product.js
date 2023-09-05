@@ -19,8 +19,17 @@ description: {
 imageUrl: {
   type: String,
   required: true
+},
+userId:{
+  type:Schema.Types.ObjectId,
+  ref:'User'//name of model which you want to relate with it
+  ,
+  required: true
 }
 });
+
+
+
 
 
 
