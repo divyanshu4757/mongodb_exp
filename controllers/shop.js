@@ -49,12 +49,14 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-        .then(products => {
+    .populate('cart.items.productId')
+     .then(user => {
+          console.log(user.cart.items);
+          const p = user.cart.items
           res.render('shop/cart', {
             path: '/cart',
             pageTitle: 'Your Cart',
-            products: products
+            products: p
           });
 
     })
@@ -67,7 +69,7 @@ exports.postCart = (req, res, next) => {
   Product.findById(prodId).then(
     product=>{
 
-      return req.user.addToCart(product);
+      return req.user.addToCart(product);// we added this method in user model and now calling it on user object getting in the request
     }
   ).then(result=>{
     console.log(result)

@@ -14,12 +14,39 @@ const userSchema = new Schema({
   cart: {
     items: [
       {
-        productId: { type: Schema.Types.ObjectId,ref:'Product',required: true },
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
         quantity: { type: Number, required: true },
       },
     ],
   },
 });
 
+userSchema.methods.addToCart = function (product) {
+  const cartProductIndex = this.cart.items.findIndex((cp) => {
+    return cp.productId.toString() === product._id.toString();
+  });
 
-module.exports = mongoose.model('User' , userSchema);
+  let newQuantity = 1;
+  const updatedCartitems = [...this.cart.items];
+
+  if (cartProductIndex >= 0) {
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+
+    updatedCartitems[cartProductIndex].quantity = newQuantity;
+  } else {
+    updatedCartitems.push({
+      productId: product._id, //yaha tum sirf id pass karo , mongoose usko convert kr dega objectId m bcoz u have defined it that way
+      quantity: newQuantity,
+    });
+  }
+
+  const updatedCart = { items: updatedCartitems };
+  this.cart = updatedCart;
+  return this.save();
+};
+
+module.exports = mongoose.model("User", userSchema);
